@@ -17,6 +17,8 @@
 		C539F85A25C93F06009442F8 /* BackendError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C539F85925C93F06009442F8 /* BackendError.swift */; };
 		C539F85F25C93F3B009442F8 /* CustomError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C539F85E25C93F3B009442F8 /* CustomError.swift */; };
 		C539F86425C941ED009442F8 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C539F86325C941ED009442F8 /* NotificationManager.swift */; };
+		C58B595B25E789F300AD316C /* ActionSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58B595A25E789F300AD316C /* ActionSheetView.swift */; };
+		C58B595F25E78A0B00AD316C /* ActionSheetView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C58B595E25E78A0B00AD316C /* ActionSheetView.xib */; };
 		C5A3CC9125CBDE1A004FA434 /* TopPopupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5A3CC8E25CBDDCE004FA434 /* TopPopupView.swift */; };
 		C5A3CC9425CBDE4A004FA434 /* StyleProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5A3CC9325CBDE4A004FA434 /* StyleProtocol.swift */; };
 		C5A3CC9625CBDE64004FA434 /* TopPopupView.xib in Resources */ = {isa = PBXBuildFile; fileRef = C5A3CC8F25CBDDCE004FA434 /* TopPopupView.xib */; };
@@ -70,6 +72,8 @@
 		C539F85925C93F06009442F8 /* BackendError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackendError.swift; sourceTree = "<group>"; };
 		C539F85E25C93F3B009442F8 /* CustomError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomError.swift; sourceTree = "<group>"; };
 		C539F86325C941ED009442F8 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		C58B595A25E789F300AD316C /* ActionSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionSheetView.swift; sourceTree = "<group>"; };
+		C58B595E25E78A0B00AD316C /* ActionSheetView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ActionSheetView.xib; sourceTree = "<group>"; };
 		C5A3CC8E25CBDDCE004FA434 /* TopPopupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPopupView.swift; sourceTree = "<group>"; };
 		C5A3CC8F25CBDDCE004FA434 /* TopPopupView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TopPopupView.xib; sourceTree = "<group>"; };
 		C5A3CC9325CBDE4A004FA434 /* StyleProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleProtocol.swift; sourceTree = "<group>"; };
@@ -223,9 +227,19 @@
 		C539F86825C94ADC009442F8 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				C58B595925E7899800AD316C /* ActionSheet */,
 				C5A3CC8D25CBDDCE004FA434 /* TopPopup */,
 			);
 			path = View;
+			sourceTree = "<group>";
+		};
+		C58B595925E7899800AD316C /* ActionSheet */ = {
+			isa = PBXGroup;
+			children = (
+				C58B595A25E789F300AD316C /* ActionSheetView.swift */,
+				C58B595E25E78A0B00AD316C /* ActionSheetView.xib */,
+			);
+			path = ActionSheet;
 			sourceTree = "<group>";
 		};
 		C5A3CC8D25CBDDCE004FA434 /* TopPopup */ = {
@@ -700,6 +714,7 @@
 				C5BDF7D525BE663E00084B8F /* LaunchScreen.storyboard in Resources */,
 				C5BDF7D225BE663E00084B8F /* Assets.xcassets in Resources */,
 				C5BDF83125C10E0800084B8F /* Init.storyboard in Resources */,
+				C58B595F25E78A0B00AD316C /* ActionSheetView.xib in Resources */,
 				C5A3CC9625CBDE64004FA434 /* TopPopupView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -775,6 +790,7 @@
 				C5B8A67E25CCE491004853D1 /* ViewExtension.swift in Sources */,
 				C5B8A68C25CCF175004853D1 /* ColorExtension.swift in Sources */,
 				C5BDF83F25C10ED900084B8F /* InitViewController.swift in Sources */,
+				C58B595B25E789F300AD316C /* ActionSheetView.swift in Sources */,
 				C539F83725C931D6009442F8 /* TableProtocol.swift in Sources */,
 				C5BDF84F25C113EA00084B8F /* SceneManager.swift in Sources */,
 				C5B8A68125CCE53A004853D1 /* DateExtension.swift in Sources */,

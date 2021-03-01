@@ -13,20 +13,7 @@ class PopupManager {
     public static let shared = PopupManager()
     var popups: [(backgroundView: UIView, contentView: UIView, position: PopupPosition)] = []
     
-//    func showAlert(message: String? = nil, attributedMessage: NSAttributedString? = nil, topButton: String? = nil, bottomButton: String? = nil, showingForver: Bool = false, topHandler: (()->Void)? = nil, bottomHandler: (()->Void)? = nil) {
-//        let alert = AlertView.instance()
-//        alert.isShowingForver = showingForver
-//        self.show(view: alert, position: .center)
-//        alert.setData(message: message, attributedMessage: attributedMessage, topButtonTitle: topButton, bottomButtonTitle: bottomButton, topHandler: topHandler, bottomHandler: bottomHandler)
-//    }
-//        
-//    func showTopPopup(message: String = "", status: Status = .info, timeDisplay: TimeInterval = 3.0) {
-//        let popup = TopPopupView.instance()
-//        self.show(view: popup, position: .top, absorbTouchBackground: false)
-//        popup.setData(message: message, status: status, timeDisplay: timeDisplay)
-//    }
-    
-    func dismiss(_ view: UIView? = nil) {
+    @objc func dismiss(_ view: UIView? = nil, completion: (()->Void)? = nil) {
         if let currentView = view {
             var index: Int = -1
             for i in 0..<popups.count {
@@ -50,6 +37,7 @@ class PopupManager {
                     } completion: { completed in
                         contentView.removeFromSuperview()
                         backgroundView.removeFromSuperview()
+                        completion?()
                     }
                 case .bottom:
                     UIView.animate(withDuration: 0.5) {
@@ -58,6 +46,7 @@ class PopupManager {
                     } completion: { completed in
                         contentView.removeFromSuperview()
                         backgroundView.removeFromSuperview()
+                        completion?()
                     }
 
                 case .center:
@@ -67,8 +56,28 @@ class PopupManager {
                     } completion: { completed in
                         contentView.removeFromSuperview()
                         backgroundView.removeFromSuperview()
+                        completion?()
                     }
-
+                case .topOfView:
+                    UIView.animate(withDuration: 0.5) {
+                        backgroundView.alpha = 0.0
+                        contentView.transform = CGAffineTransform(translationX: contentView.frame.size.width + 48, y: 0)
+                    } completion: { completed in
+                        contentView.removeFromSuperview()
+                        backgroundView.removeFromSuperview()
+                        completion?()
+                    }
+                    break
+                case .bottomOfView:
+                    UIView.animate(withDuration: 0.5) {
+                        backgroundView.alpha = 0.0
+                        contentView.transform = CGAffineTransform(translationX: contentView.frame.size.width + 48, y: 0)
+                    } completion: { completed in
+                        contentView.removeFromSuperview()
+                        backgroundView.removeFromSuperview()
+                        completion?()
+                    }
+                    break
                 }
             }
         } else if let item = popups.last {
@@ -84,6 +93,7 @@ class PopupManager {
                 } completion: { completed in
                     contentView.removeFromSuperview()
                     backgroundView.removeFromSuperview()
+                    completion?()
                 }
             case .bottom:
                 UIView.animate(withDuration: 0.5) {
@@ -92,6 +102,7 @@ class PopupManager {
                 } completion: { completed in
                     contentView.removeFromSuperview()
                     backgroundView.removeFromSuperview()
+                    completion?()
                 }
 
             case .center:
@@ -101,16 +112,36 @@ class PopupManager {
                 } completion: { completed in
                     contentView.removeFromSuperview()
                     backgroundView.removeFromSuperview()
+                    completion?()
                 }
-
+            case .topOfView:
+                UIView.animate(withDuration: 0.5) {
+                    backgroundView.alpha = 0.0
+                    contentView.transform = CGAffineTransform(translationX: contentView.frame.size.width + 48, y: 0)
+                } completion: { completed in
+                    contentView.removeFromSuperview()
+                    backgroundView.removeFromSuperview()
+                    completion?()
+                }
+                break
+            case .bottomOfView:
+                UIView.animate(withDuration: 0.5) {
+                    backgroundView.alpha = 0.0
+                    contentView.transform = CGAffineTransform(translationX: contentView.frame.size.width + 48, y: 0)
+                } completion: { completed in
+                    contentView.removeFromSuperview()
+                    backgroundView.removeFromSuperview()
+                    completion?()
+                }
+                break
             }
         }
     }
     
-    fileprivate func show(view: UIView, position: PopupPosition, absorbTouchBackground: Bool = true) {
-        guard let window = UIApplication.shared.windows.last else {return}
+    func show(view: UIView, position: PopupPosition, absorbTouchBackground: Bool = true, touchBackgroundDismiss: Bool = false) {
+        guard let window = SceneManager.shared.visibleNavigation()?.view else {return}
         let backgroundView = UIView()
-        backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.25)
+        backgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.4)
         if absorbTouchBackground {
             backgroundView.isUserInteractionEnabled = true
         } else {
@@ -120,8 +151,19 @@ class PopupManager {
         backgroundView.snp.makeConstraints { maker in
             maker.top.bottom.leading.trailing.equalToSuperview()
         }
+        if touchBackgroundDismiss {
+            let button = UIButton(type: .custom)
+            backgroundView.addSubview(button)
+            button.snp.makeConstraints { maker in
+                maker.top.bottom.leading.trailing.equalToSuperview()
+            }
+            button.rx.tap.bind {
+                self.dismiss(view)
+            }.disposed(by: disposeBag)
+        }
         
-        backgroundView.addSubview(view)
+        window.addSubview(view)
+        
         
         // Animate
         backgroundView.alpha = 0.0
@@ -137,8 +179,8 @@ class PopupManager {
             view.transform = CGAffineTransform(translationX: 0, y: -view.frame.size.height)
         case .bottom:
             view.snp.makeConstraints { maker in
-                maker.leading.equalToSuperview().offset(24)
-                maker.trailing.equalToSuperview().offset(-24)
+                maker.leading.equalToSuperview().offset(0)
+                maker.trailing.equalToSuperview().offset(0)
                 maker.bottom.equalToSuperview()
                 maker.height.lessThanOrEqualToSuperview()
             }
@@ -151,16 +193,62 @@ class PopupManager {
                 maker.height.lessThanOrEqualToSuperview()
             }
             view.transform = CGAffineTransform(translationX: 0, y: view.frame.size.height + UIScreen.main.bounds.size.height/2)
+        case .topOfView(let sourceView, let offset):
+            let sourceViewPosition = sourceView.superview?.convert(sourceView.frame.origin, to: nil)
+            let offSetView = (window.frame.size.height - (sourceViewPosition?.y ?? 0)) + offset
+            view.snp.makeConstraints { maker in
+                maker.leading.equalToSuperview().offset(24)
+                maker.trailing.equalToSuperview().offset(-24)
+                maker.height.lessThanOrEqualToSuperview()
+                maker.bottom.equalToSuperview().offset( -offSetView )
+            }
+            view.transform = CGAffineTransform(translationX: view.frame.size.width + 48, y: 0)
+        case .bottomOfView(let sourceView, let offset):
+            let sourceViewPosition = sourceView.superview?.convert(sourceView.frame.origin, to: nil)
+            let offSetView = ((sourceViewPosition?.y ?? 0) + sourceView.frame.size.height) + offset
+            view.snp.makeConstraints { maker in
+                maker.leading.equalToSuperview().offset(24)
+                maker.trailing.equalToSuperview().offset(-24)
+                maker.height.lessThanOrEqualToSuperview()
+                maker.top.equalToSuperview().offset(offSetView)
+            }
+            view.transform = CGAffineTransform(translationX: view.frame.size.width + 48, y: 0)
         }
         self.popups.append((backgroundView, view, position))
         
-        UIView.animate(withDuration: 0.5) {
+        UIView.animate(withDuration: 0.35) {
             view.transform = CGAffineTransform.identity
             backgroundView.alpha = 1.0
         } completion: { (completed) in
             
         }
     }
+    
+    //MARK: show custom view
+    func showActionSheet(_ actions: [ActionSheetView.Action]) {
+        let actionSheet = ActionSheetView.instatiate()
+        actionSheet.addActions(actions.compactMap({ (a) -> ActionSheetView.Action? in
+            return ActionSheetView.Action(title: a.title, style: a.style, handler: {
+                PopupManager.shared.dismiss(actionSheet, completion: {
+                    a.handler?()
+                })
+            })
+        }))
+        PopupManager.shared.show(view: actionSheet, position: .bottom)
+    }
+    
+    func showTopPopup(message: String = "", status: Status = .info, timeDisplay: TimeInterval = 3.0) {
+        let popup = TopPopupView.instance()
+        self.show(view: popup, position: .top, absorbTouchBackground: false)
+        popup.setData(message: message, status: status, timeDisplay: timeDisplay)
+    }
+    
+    //    func showAlert(message: String? = nil, attributedMessage: NSAttributedString? = nil, topButton: String? = nil, bottomButton: String? = nil, showingForver: Bool = false, topHandler: (()->Void)? = nil, bottomHandler: (()->Void)? = nil) {
+    //        let alert = AlertView.instance()
+    //        alert.isShowingForver = showingForver
+    //        self.show(view: alert, position: .center)
+    //        alert.setData(message: message, attributedMessage: attributedMessage, topButtonTitle: topButton, bottomButtonTitle: bottomButton, topHandler: topHandler, bottomHandler: bottomHandler)
+    //    }
     
     
 }

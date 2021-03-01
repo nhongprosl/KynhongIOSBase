@@ -15,6 +15,8 @@ protocol ApplicationLifeCycleListener: class {
 class SceneManager {
     public static let shared = SceneManager()
     let disposeBag = DisposeBag()
+    let styleObservable: BehaviorSubject<Style> = BehaviorSubject(value: .light)
+    var style: Style = .light
     weak var applicationListener: ApplicationLifeCycleListener?
     
     fileprivate var window: UIWindow!
@@ -24,6 +26,9 @@ class SceneManager {
     fileprivate var timeHideApp: TimeInterval = 0
     
     private init() {
+        styleObservable.subscribe(onNext: { value in
+            self.style = value
+        }).disposed(by: disposeBag)
     }
     
     func config(_ window: UIWindow) {
@@ -204,21 +209,50 @@ class SceneManager {
         }
     }
     
+    func visibleNavigation() -> UINavigationController? {
+        return self.getCurrentNavigation(window.rootViewController)
+    }
+    
     // action
     func appDidBecomeActive() {
-        
+        if self.didResignActive {
+            self.didResignActive = false
+            self.visualEffectView.removeFromSuperview()
+            self.applicationListener?.applicationDidBecomeActive()
+        }
     }
     
     func appWillResignActive() {
-        
+        guard let lastWindow = UIApplication.shared.windows.last else {return}
+        self.didResignActive = true
+        switch self.style {
+        case .light:
+            let blurEffect = UIBlurEffect(style: .light)
+            self.visualEffectView = UIVisualEffectView(effect: blurEffect)
+            lastWindow.addSubview(self.visualEffectView)
+            self.visualEffectView.snp.makeConstraints { maker in
+                maker.top.bottom.leading.trailing.equalToSuperview()
+            }
+        case .dark:
+            let blurEffect = UIBlurEffect(style: .dark)
+            self.visualEffectView = UIVisualEffectView(effect: blurEffect)
+            lastWindow.addSubview(self.visualEffectView)
+            self.visualEffectView.snp.makeConstraints { maker in
+                maker.top.bottom.leading.trailing.equalToSuperview()
+            }
+        }
     }
     
     func appDidEnterBackground() {
-        
+        timeHideApp = Date().timeIntervalSince1970
     }
     
     func appWillEnterForeground() {
-        
+        let now = Date().timeIntervalSince1970
+        let sumTimeHideApp = now - self.timeHideApp
+        if sumTimeHideApp < 0 || sumTimeHideApp >= 60 {
+            SceneManager.shared.start(scene: .initView)
+        }
     }
     
 }
