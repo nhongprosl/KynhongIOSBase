@@ -15,12 +15,14 @@ class InitViewController: ViewController {
     @IBAction func buttonClick(_ sender: Any) {
 //        PopupManager.shared.showTopPopup(message: "hello", status: .info, timeDisplay: 3.0)
         
-        let arr = [
-            ActionSheetView.Action(title: "button1", style: .default, handler: {}),
-            ActionSheetView.Action(title: "button2", style: .default, handler: {})
-        ]
+//        let arr = [
+//            ActionSheetView.Action(title: "button1", style: .default, handler: {}),
+//            ActionSheetView.Action(title: "button2", style: .default, handler: {})
+//        ]
+//
+//        PopupManager.shared.showActionSheet(arr)
         
-        PopupManager.shared.showActionSheet(arr)
+        SceneManager.shared.start(scene: .main)
     }
     
 }
