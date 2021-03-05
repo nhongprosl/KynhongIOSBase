@@ -6,7 +6,7 @@
 //
 import Foundation
 
-enum Style {
-    case light
-    case dark
+enum Style: Int {
+    case light = 1
+    case dark = 2
 }

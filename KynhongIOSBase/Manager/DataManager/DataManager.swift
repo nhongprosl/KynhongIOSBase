@@ -21,15 +21,43 @@ class DataManager {
     // Environment
     var environment: Environment = .development
     // Style
-    var styleConfigured: Style = .light
-    var isAutoStyle: Bool = true
+    var styleConfigured: Style = .light {
+        didSet {
+            UserDefaults.standard.set(styleConfigured.rawValue, forKey: "kynhongStyleConfigured")
+            SceneManager.shared.style = styleConfigured
+            SceneManager.shared.styleObservable.onNext(styleConfigured)
+        }
+    }
+    var isAutoStyle: Bool = true {
+        didSet {
+            UserDefaults.standard.set(self.isAutoStyle, forKey: "kynhongAutoStyle")
+            UserDefaults.standard.synchronize()
+        }
+    }
     
     // Token
     var token: String? = nil
     
     private var sessionManager: Alamofire.Session!
     private init() {
+        // set init style and configuration for app
+        if UserDefaults.standard.object(forKey: "kynhongHasOpened") == nil {
+            UserDefaults.standard.set(false, forKey: "kynhongHasOpened")
+        }
+        if UserDefaults.standard.object(forKey: "kynhongAutoStyle") == nil {
+            UserDefaults.standard.set(true, forKey: "kynhongAutoStyle")
+        }
+        if UserDefaults.standard.object(forKey: "kynhongStyleConfigured") == nil {
+            UserDefaults.standard.set(Style.light.rawValue, forKey: "kynhongStyleConfigured")
+        }
+        UserDefaults.standard.synchronize()
+        
         self.hasOpened = UserDefaults.standard.bool(forKey: "kynhongHasOpened")
+        self.isAutoStyle = UserDefaults.standard.bool(forKey: "kynhongAutoStyle")
+        let styleConfigInt = UserDefaults.standard.integer(forKey: "kynhongStyleConfigured")
+        if let style = Style(rawValue: styleConfigInt) {
+            self.styleConfigured = style
+        }
     }
     
     func getSession() -> Alamofire.Session {

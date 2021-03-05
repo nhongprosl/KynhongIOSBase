@@ -13,7 +13,8 @@ class ViewModel: NSObject {
     let initialData: Any?
     let isLoading: BehaviorSubject<Bool>
     var isLocking: Bool = false
-//    var backendConnector: BackendConnector?
+    var backendConnector: BackendConnector?
+    let isNoData: BehaviorSubject<Bool> = BehaviorSubject(value: false)
     
     fileprivate var tableView: UITableView?
     
@@ -26,7 +27,7 @@ class ViewModel: NSObject {
         self.tableView = tableView
     }
     
-//    func connector<T: BackendConnector>(_ type: T.Type) -> T {
-//        return self.backendConnector as! T
-//    }
+    func connector<T: BackendConnector>(_ type: T.Type) -> T {
+        return self.backendConnector as! T
+    }
 }
